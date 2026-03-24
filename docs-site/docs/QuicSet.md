@@ -21,5 +21,5 @@
 | [X (Twitter) ⓘ](X) | ⭐⭐ | `twitter://CONSUMER_KEY/CONSUMER_SECRET/ACCESS_TOKEN/ACCESS_SECRET` |
 | [飞书 ⓘ](Feishu) | ⭐⭐⭐ | `feishu://APP_ID/APP_SECRET/CHAT_ID` |
 | [钉钉 ⓘ](DingTalk) | ⭐⭐⭐ | `dingtalk://ACCESS_TOKEN` |
-| [企业微信 ⓘ](WeCom) | ⭐⭐⭐ | `wecom://CORP_ID/AGENT_ID/SECRET` |
+| [企业微信 ⓘ](WeCom) | ⭐⭐⭐ | `wecombot://CORP_ID/AGENT_ID/SECRET` |
 | [邮件 (Email) ⓘ](Email) | ⭐⭐⭐⭐ | `mailto://USER:PASSWORD@SMTP_SERVER:PORT` |
