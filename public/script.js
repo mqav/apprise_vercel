@@ -88,22 +88,26 @@ class ChipInput {
     }
 
     getIcon(text) {
-        const lower = text.toLowerCase();
-        if (lower.startsWith('tgram')) return Icons.telegram;
-        if (lower.startsWith('twitter') || lower.startsWith('x')) return Icons.x;
-        if (lower.startsWith('whatsapp')) return Icons.whatsapp;
-        if (lower.startsWith('line')) return Icons.line;
-        if (lower.startsWith('slack')) return Icons.slack;
-        if (lower.startsWith('discord')) return Icons.discord;
-        if (lower.startsWith('bark')) return Icons.bark;
-        if (lower.startsWith('dingtalk')) return Icons.dingtalk;
-        if (lower.startsWith('wecombot')) return Icons.wecombot;
-        if (lower.startsWith('qq')) return Icons.qq;
-        if (lower.startsWith('feishu')) return Icons.feishu;
-        if (lower.startsWith('ntfy')) return Icons.ntfy;
-        if (lower.startsWith('mail')) return Icons.mail;
+        // 去掉可能存在的前缀 "数字:alerts="
+        const cleaned = text.replace(/^\d+:alerts=/i, "");
+        const lower = cleaned.toLowerCase();
+
+        if (lower.startsWith("tgram")) return Icons.telegram;
+        if (lower.startsWith("twitter") || lower.startsWith("x")) return Icons.x;
+        if (lower.startsWith("whatsapp")) return Icons.whatsapp;
+        if (lower.startsWith("line")) return Icons.line;
+        if (lower.startsWith("slack")) return Icons.slack;
+        if (lower.startsWith("discord")) return Icons.discord;
+        if (lower.startsWith("bark")) return Icons.bark;
+        if (lower.startsWith("dingtalk")) return Icons.dingtalk;
+        if (lower.startsWith("wecombot")) return Icons.wecombot;
+        if (lower.startsWith("qq")) return Icons.qq;
+        if (lower.startsWith("feishu")) return Icons.feishu;
+        if (lower.startsWith("ntfy")) return Icons.ntfy;
+        if (lower.startsWith("mail")) return Icons.mail;
         return Icons.link;
     }
+
 
     render() {
         const chips = this.container.querySelectorAll('.chip');

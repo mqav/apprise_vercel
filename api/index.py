@@ -232,12 +232,41 @@ def _parse_url_list(urls_input) -> list[str]:
     return []
 
 
+def _split_tag_prefix(raw_url: str) -> tuple[str, str]:
+    """
+    分离 Apprise 1.11.0+ 标签前缀，返回 (prefix_with_eq, actual_url)。
+
+    支持格式：
+      tgram://...            → ('', 'tgram://...')
+      alerts=tgram://...     → ('alerts=', 'tgram://...')
+      1:alerts=tgram://...   → ('1:alerts=', 'tgram://...')
+    """
+    eq_pos = raw_url.find("=")
+    if eq_pos == -1:
+        return "", raw_url
+
+    prefix_part = raw_url[:eq_pos]
+    url_part = raw_url[eq_pos + 1 :]
+
+    # 前缀部分绝不含 '://'；含则说明 '=' 是 query 参数的一部分
+    if "://" in prefix_part:
+        return "", raw_url
+
+    return prefix_part + "=", url_part
+
+
 def decorate_url(raw_url: str, icon_url: str) -> str:
-    """按协议类型为 URL 注入图标、分组等默认参数（仅在参数缺失时补充，不覆盖已有值）"""
+    """按协议类型为 URL 注入图标、分组等默认参数（仅在参数缺失时补充，不覆盖已有值）。
+    兼容 Apprise 1.11.0+ 的 [priority:]tag=url 前缀格式。
+    """
     if not icon_url:
         return raw_url
+
+    # ── 拆离标签前缀 ──────────────────────────────────────────────────────────
+    prefix, actual_url = _split_tag_prefix(raw_url)
+
     try:
-        parsed = urlparse(raw_url)
+        parsed = urlparse(actual_url)
         scheme = parsed.scheme.lower()
         params = parse_qs(parsed.query)
 
@@ -263,10 +292,14 @@ def decorate_url(raw_url: str, icon_url: str) -> str:
         elif scheme in ("mailto", "mailtos"):
             set_if_missing("from", "Apprise_Vercel")
 
-        return urlunparse(parsed._replace(query=urlencode(params, doseq=True)))
+        decorated = urlunparse(parsed._replace(query=urlencode(params, doseq=True)))
+
+        # ── 拼回标签前缀 ──────────────────────────────────────────────────────
+        return prefix + decorated
+
     except Exception as e:
         print(f"URL Decoration Error: {e}")
-        return raw_url
+        return raw_url  # 原样返回，含前缀
 
 
 def _build_apprise(url_list: list[str], icon_url: str) -> tuple[apprise.Apprise, int]:
